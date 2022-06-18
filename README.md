@@ -1,6 +1,6 @@
 # Project 02
 
-Please make classes and methods based on the [class diagram 01.pdf](./Class%20Diagram%2001.pdf)
+Please make classes and methods based on the [class diagram.pdf](./Class%20Diagram.pdf)
 and [Program Sequence.png](Program%20Sequence.png)
 
 If you have any questions about the diagram, make an issue [here] (https://github.com/amallad3/Project-2/issues)
