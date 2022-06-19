@@ -44,7 +44,7 @@ public class KMClusterHandler implements Observer{
 			else
 				reClusters(ClustersA, ClustersB);
 		}
-}
+	}
 	
 	private static void sortPoint(int [][] points) {
 		int[] temp;
