@@ -1,81 +1,52 @@
-import java.awt.*;
-import java.awt.List;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.util.*;
+package view;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;  
+import java.awt.GridBagLayout;  
+
+import common.DrawableGroup;
+import controller.ClassifierController;
 
 /**
  * This is the main GUI class. It creates the frame, and adds the
  * panels + buttons on the screen.
  *
  * @author Darius Morar
- * @version 06.18.2022
+ * @version 06.19.2022
  */
 
-public class MainFrame extends JFrame implements ActionListener, MouseListener {
+public class MainFrame extends JFrame implements ClassifierView {
+	
+    private OptionPanel optionPanel;
+    private BoardPanel boardPanel;
 
-	private JFrame frame = new JFrame();
-	private JPanel panelDots = new JPanel();
-	private JPanel panelButtons = new JPanel();
-	private JButton run = new JButton();
-	private JCheckBox cluster = new JCheckBox();
-	private JCheckBox line = new JCheckBox();
-	
-	
-	public static void main(String[] args) {
-		MainFrame mainFrame = new MainFrame();
-	}
-	
-	
-	public MainFrame() {
-		
-		//frame
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.pack();
-		frame.setSize(600, 400);
-		frame.setTitle("Dots Project");
-		setLayout(new BorderLayout());
-		
-		//workarea
-		panelDots.setBackground(Color.gray);
-		
-		//button options
-		GridLayout vertical = new GridLayout(8, 0);
-		panelButtons.setLayout(vertical);
-		cluster.setText("Cluster - K-means");
-		line.setText("Line - Nearest Neighbor");
-		run.setText("Run");
-		panelButtons.add(cluster);
-		panelButtons.add(line);
-		panelButtons.add(run);
-		
-		//lsteners
-		panelDots.addMouseListener(this);
-		
-		//add panels tp frame
-		frame.add(panelDots, BorderLayout.CENTER);
-		frame.add(panelButtons, BorderLayout.WEST);
+    public MainFrame() {
+        this.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+        this.pack();
+		this.setSize(800, 500);
+		this.setTitle("Dots Project");
 
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		
-	}
-	
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-//		Graphics g = getGraphics();
-//		g.setColor(Color.black);
-//		g.fillOval(e.getX(), e.getY(), 10, 10);
-		
-	}
+        this.optionPanel = new OptionPanel();
+        this.add(optionPanel, BorderLayout.WEST);
 
-	public void mousePressed(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
-	
+        this.boardPanel = new BoardPanel();
+        this.add(boardPanel, BorderLayout.CENTER);
+
+    }
+
+    @Override
+    public void addListners(ClassifierController controller) {
+        this.optionPanel.addListener(controller);
+        this.boardPanel.addListener(controller);
+    }
+
+    @Override
+    public void render(DrawableGroup group) {
+        this.boardPanel.render(group);
+    }
 }
