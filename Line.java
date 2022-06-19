@@ -5,19 +5,19 @@
  * @version 1.0
  */
 public class Line {
-    private int endPoint1;
-    private int endPoint2;
+    private Point endPoint1;
+    private Point endPoint2;
 
-    public Line(int endPoint1, int endPoint2) {
+    public Line(Point endPoint1, Point endPoint2) {
         this.endPoint1 = endPoint1;
         this.endPoint2 = endPoint2;
     }
 
-    public int getEndPoint1() {
+    public Point getEndPoint1() {
         return this.endPoint1;
     }
 
-    public int getEndPoint2() {
+    public Point getEndPoint2() {
         return this.endPoint2;
     }
 }
