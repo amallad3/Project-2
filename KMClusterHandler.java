@@ -112,6 +112,15 @@ public class KMClusterHandler implements Observer{
 			ClustersB[i].clear();
 		}
 	}
+	
+//	you may need this method.
+	
+//	public static void displayCluster(ArrayList<Integer>[] clusterList, double[][] points) {
+//		for(int i=0; i<clusterList.length; i++) {
+//			for(int index: clusterList[i])	{
+//				}			
+//		}
+//	}
   
 /**
  * Set the points array 
