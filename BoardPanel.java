@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.Point;
 import java.awt.event.*;
+import java.util.Observable;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 /*
@@ -9,11 +10,9 @@ import javax.swing.event.MouseInputListener;
 * @version:
 * */
 
-public class BoardPanel {
+public class BoardPanel extends Observable {
     private JLabel label;
-
     private Point clickPoint;
-
     private void buildUI(Container container) {
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
         CoordinateArea coordinateArea = new CoordinateArea(this);
@@ -27,14 +26,21 @@ public class BoardPanel {
     public void updateClickPoint(Point p) {
         clickPoint = p;
     }
-    //public BoardPanel(){
-    public static void main(String[] args) {
+    public BoardPanel(){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         BoardPanel controller = new BoardPanel();
         controller.buildUI(frame.getContentPane());
         frame.pack();
         frame.setVisible(true);
+    }
+    //
+    public int getX() {
+        return getX();
+    }
+    //
+    public int getY() {
+        return getY();
     }
 
     public static class CoordinateArea extends JComponent implements MouseInputListener {
@@ -48,11 +54,9 @@ public class BoardPanel {
             setBackground(Color.WHITE);
             setOpaque(true);
         }
-
         public Dimension getPreferredSize() {
             return preferredSize;
         }
-
         protected void paintComponent(Graphics g) {
             if (point != null) {
                 g.setColor(getForeground());
@@ -60,7 +64,7 @@ public class BoardPanel {
             }
         }
 
-        // Methods required by the MouseInputListener interface.
+        // show the dots
         public void mouseClicked(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
@@ -73,23 +77,11 @@ public class BoardPanel {
             controller.updateClickPoint(point);
             repaint();
         }
-
-        public void mouseMoved(MouseEvent e) {
-        }
-
-        public void mouseExited(MouseEvent e) {
-        }
-
-        public void mouseReleased(MouseEvent e) {
-        }
-
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        public void mousePressed(MouseEvent e) {
-        }
-
-        public void mouseDragged(MouseEvent e) {
-        }
+        public void mouseMoved(MouseEvent e) {}
+        public void mouseExited(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e) {}
+        public void mouseEntered(MouseEvent e) {}
+        public void mousePressed(MouseEvent e) {}
+        public void mouseDragged(MouseEvent e) {}
     }
 }
