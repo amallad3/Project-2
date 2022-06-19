@@ -1,5 +1,8 @@
 import java.util.Observer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 /**
  * 
@@ -8,21 +11,29 @@ import java.util.Observable;
  * @author Yaci Zhu
  * @version 1.0
  */
-public class KMClusterHandler implements Observer{ 
+public class KMClusterHandler implements PointHandler { 
   
+    
     private final int clusters=2;
     private int times;
-    private final int maxrecrusionTime=5;
+    private final int maxrecrusionTime=2;
     private double[][] means = new double[2][2];
     private ArrayList<Integer>[] ClustersA ;
     private ArrayList<Integer>[] ClustersB ;
     public int[][] points;
-    private int records= =points.length;
+    private int records =points.length;
   
- /**
- * constructor
- */
-	public KMClusterHandler(){	
+	private List<Point> KMCluster(Board observable) {
+		
+		List<Point> dots = new ArrayList<Point>(observable.getPoints());
+		List<Point> Clusterpionts = new LinkedList<Point>();
+		
+		for (int i = 0; i < dots.size() - 1; i++) {
+			Point a = dots.get(i);
+			points[times][0]=a.getX();
+			points[times++][1] =a.getY();
+			}	
+		
 		sortPoint(points);
 		for(int i=0; i<means.length; i++) {
 			means[i][0] = points[(int) (Math.floor((records*1/clusters)/2) + i*records/clusters)][0];
@@ -44,8 +55,13 @@ public class KMClusterHandler implements Observer{
 			else
 				reClusters(ClustersA, ClustersB);
 		}
-	}
+		
+		return Clusterpionts;
+		
 	
+}
+	
+
 	private static void sortPoint(int [][] points) {
 		int[] temp;
 		for(int i=0; i<points.length; i++)
@@ -72,7 +88,7 @@ public class KMClusterHandler implements Observer{
 		}
 	}
 
-	private static void createClusters(ArrayList<Integer>[] clusterList, double[][] means, int[][] points) {
+	private static  ArrayList<Integer>[] createClusters (ArrayList<Integer>[] clusterList, double[][] means, int[][] points) {
 		double distance[] = new double[means.length];
 		double minDistance = 999999999;
 		int minIndex = 0;
@@ -86,8 +102,9 @@ public class KMClusterHandler implements Observer{
 					minIndex = j;
 				}
 			}
-			clusterList[minIndex].add(i);
+			 clusterList[minIndex].add(i);
 		}
+		return clusterList;
 	}
 	
 	private static boolean Equality(ArrayList<Integer>[] clusterA, ArrayList<Integer>[] clusterB) {
@@ -113,24 +130,17 @@ public class KMClusterHandler implements Observer{
 		}
 	}
 	
-//	you may need this method.
-	
-//	public static void displayCluster(ArrayList<Integer>[] clusterList, double[][] points) {
-//		for(int i=0; i<clusterList.length; i++) {
-//			for(int index: clusterList[i])	{
-//				}			
-//		}
-//	}
-  
-/**
- * Set the points array 
- * @param o Observable object that notified this plotPanel observer
- * @param arg Object passed by notifyObservers()
- */
+
+
 	@Override
-	public void update(Observable o, Object arg) {	
-			points[times][0] = ((BoardPanel) o).getX();
-			points[times++][1] =((BoardPanel) o).getY();
-		}
-	
+	public void update(Board observable, List<UpdateOption> options) {
+		if (options.isEmpty()) {
+			observable.setPoints(Collections.<Point>emptyList());
+		} else if (options.get(0) == UpdateOption.LINE) {
+			observable.setPoints(Collections.<Point>emptyList());
+		} else {
+			observable.setPoints(KMCluster(observable));
+		}		
+	}	
 }
+
