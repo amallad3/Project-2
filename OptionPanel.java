@@ -1,12 +1,8 @@
-package view;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import common.UpdateOption;
-import controller.ClassifierController;
 
 import java.awt.GridBagConstraints;  
 import java.awt.GridBagLayout;
@@ -20,7 +16,7 @@ import java.awt.event.ActionEvent;
  * The panel for the buttons
  * 
  * @author Darius Morar
- * @version 06.19.2022
+ * @version 06.20.2022
  */
 
 public class OptionPanel extends JPanel {
@@ -41,20 +37,18 @@ public class OptionPanel extends JPanel {
     	
     }
 
-    public void addListener(ClassifierController controller) {
+    public void addListener(ClassifierModel controller) {
 
         this.runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                List<UpdateOption> options = new ArrayList<>();
+            	ClassifierModel model = ClassifierModel.getInstance();
 
                 if (clusterBox.isSelected())
-                    options.add(UpdateOption.CLUSTER);
+                	model.calculateCluster();
                 if (lineBox.isSelected())
-                    options.add(UpdateOption.LINE);
-
-                controller.runOptions(options);
+                    model.calculateLines();
             }
         });
     }
