@@ -35,8 +35,8 @@ public class KMClusterHandler implements PointHandler {
 		
 		sortPoint(points);
 		for(int i=0; i<means.length; i++) {
-			means[i][0] = points[(int) (Math.floor((points.length*1/clusters)/2) + i*points.length/clusters)][0];
-			means[i][1] = points[(int) (Math.floor((points.length*1/clusters)/2) + i*points.length/clusters)][1];
+			means[i][0] = points[(int) (Math.floor((dots.size()*1/clusters)/2) + i*dots.size()/clusters)][0];
+			means[i][1] = points[(int) (Math.floor((dots.size()*1/clusters)/2) + i*dots.size()/clusters)][1];
 		}
 		
 		for(int i=0; i<clusters; i++) {
