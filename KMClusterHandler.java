@@ -13,7 +13,12 @@ public class KMClusterHandler implements Observer{
 	private final int clusters=2;
 	private List<Point> dots;
 	private Random rand;
-
+/**
+ * 
+ * upate the object for observable class
+ * 
+ * @para board & option
+ */
 	@Override
 	public void update(Observable o, Object arg) {
 		Board board = (Board)o;
