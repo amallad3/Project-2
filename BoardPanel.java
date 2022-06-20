@@ -7,10 +7,10 @@ import javax.swing.event.MouseInputListener;
 /*
 * The BoardPanel is responsible for Draw points & lines.
 * @author: Cungang Zhang
-* @version:
+* @version:1.0
 * */
 
-public class BoardPanel extends Observable {
+public class BoardPanel extends JPanel {
     private JLabel label;
     private Point clickPoint;
     private void buildUI(Container container) {
@@ -27,12 +27,10 @@ public class BoardPanel extends Observable {
         clickPoint = p;
     }
     public BoardPanel(){
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
         BoardPanel controller = new BoardPanel();
-        controller.buildUI(frame.getContentPane());
-        frame.pack();
-        frame.setVisible(true);
+        controller.buildUI(panel);//Think it is not right... but dont know how to fix
+        panel.setVisible(true);
     }
     //
     public int getX() {
