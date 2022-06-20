@@ -1,65 +1,75 @@
+import java.util.LinkedList;
 import java.util.List;
 
 
 /**
- * This interface declares methods related to data such as points and lines.
+ * This class declares methods related to data such as points and lines. There is also
+ * Board class that manages the data, but view part should use this class. 
  * 
  * @author Yeongbae Jeon
- * @version 1.0
+ * @version 2022.06.19
  */
-public interface ClassifierModel {
+public class ClassifierModel {
+    private static ClassifierModel _instance;
+
+    private Board board;
 
     /**
-     * This method calls handlers (observers) that compute based on points and lines.
+     * This method calls a handler with the clustering algorithm to create two groups of points.
+     * Instead of returning two lists, every point has one of two colors. And the returned list
+     * is a reference in this class, so the list should not be modified.
      * 
-     * DrawableGroup contains reference to points and lines in model object, so
-     * anyone should not modify data in the DrawableGroup.
-     * 
-     * @param options List of options to determine which handler should be called
-     * @return A group of points and lines computed by the handlers.
+     * @return List of points with color.
      */
-    public DrawableGroup update(List<UpdateOption> options);
+    public List<Point> calculateCluster() {
+        this.board.notifyObservers(UpdateOption.CLUSTER);
+        return this.board.getPoints();
+    }
 
     /**
-     * This method add a new point to model, but does not call handlers. 
+     * This method calls a handler with the point conneting algorithm to create one long line.
+     * the returned list is a reference in this class, so the list should not be modified.
      * 
-     * DrawableGroup contains reference to points and lines in model object, so
-     * anyone should not modify data in the DrawableGroup.
-     * 
-     * @param p a new point to add
-     * @return A group of points and lines that were not computed by the handlers.
+     * @return List of lines that connect points.
      */
-    public DrawableGroup addPoint(Point p);
+    public List<Line> calculateLines() {
+        this.board.notifyObservers(UpdateOption.LINE);
+        return this.board.getLines();
+    }
 
     /**
-     * Getter
+     * This method add a new point to model, but does not call any handlers. And the returned
+     * list should be readonly.
      * 
-     * Returned value is just reference to points in the model
-     * 
-     * This method should not be called by any object other than handlers (observers).
-     * @return list of points
+     * @param newPoint a new point to add
+     * @return A list of points with the new point.
      */
-    public List<Point> getPoints();
+    public List<Point> addPoint(Point newPoint) {
+        this.board.addPoint(newPoint);
+        return this.board.getPoints();
+    }
 
     /**
-     * Setter
-     * 
-     * This method should not be called by any object other than handlers (observers).
-     * 
-     * Instead of copying points in the argument, this setter just copy reference.
-     * 
-     * @param points list of points to set
+     * clear all lists in the model
      */
-    public void setPoints(List<Point> points);
+    public void clearBoard() {
+        this.board.setPoints(new LinkedList<>());
+        this.board.setLines(new LinkedList<>());
+    }
 
     /**
-     * setter
-     * 
-     * This method should not be called by any object other than handlers (observers).
-     * 
-     * Instead of copying points in the argument, this setter just copy reference.
-     * 
-     * @param lines list of lines to set
+     * get a singleton object of this class
+     * @return singleton object
      */
-    public void setLines(List<Line> lines);
+    public static ClassifierModel getInstance() {
+        if (_instance == null)
+            new ClassifierModel();
+
+        return _instance;
+    }
+
+    private ClassifierModel() {
+        this.board = new Board();
+        _instance = this;
+    }
 }
