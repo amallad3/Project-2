@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.Point;
 import java.awt.event.*;
-import java.util.Observable;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 /*
@@ -13,52 +12,42 @@ import javax.swing.event.MouseInputListener;
 public class BoardPanel extends JPanel {
     private JLabel label;
     private Point clickPoint;
+
+
     private void buildUI(Container container) {
-        container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+        //container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
         CoordinateArea coordinateArea = new CoordinateArea(this);
         container.add(coordinateArea);
         label = new JLabel();
         container.add(label);
-        coordinateArea.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
-    public void updateClickPoint(Point p) {
-        clickPoint = p;
-    }
     public BoardPanel(){
+        ClassifierModel model = ClassifierModel.getInstance();
         JPanel panel = new JPanel();
         BoardPanel controller = new BoardPanel();
-        controller.buildUI(panel);//Think it is not right... but dont know how to fix
+        controller.buildUI(panel);//Think it is not right... but dont know how to fix //controller.buildUI(frame.getContentPane());
         panel.setVisible(true);
     }
-    //
-    public int getX() {
-        return getX();
-    }
-    //
-    public int getY() {
-        return getY();
+
+    //adding points on board
+    public void addPoint(Point p) {
+        clickPoint = p;
     }
 
     public static class CoordinateArea extends JComponent implements MouseInputListener {
         Point point = null;
         BoardPanel controller;
-        Dimension preferredSize = new Dimension(500, 500);
         public CoordinateArea(BoardPanel controller) {
             this.controller = controller;
             addMouseListener(this);
             addMouseMotionListener(this);
-            setBackground(Color.WHITE);
             setOpaque(true);
-        }
-        public Dimension getPreferredSize() {
-            return preferredSize;
         }
         protected void paintComponent(Graphics g) {
             if (point != null) {
                 g.setColor(getForeground());
-                g.fillOval(point.x -3, point.y -3, 7,7);
+                g.fillOval(point.x-3, point.y-3, 7,7);
             }
         }
 
@@ -72,7 +61,7 @@ public class BoardPanel extends JPanel {
                 point.x = x;
                 point.y = y;
             }
-            controller.updateClickPoint(point);
+            controller.addPoint(point);
             repaint();
         }
         public void mouseMoved(MouseEvent e) {}
