@@ -28,20 +28,36 @@ public class NearestNeighborHandler implements PointHandler {
 	private List<Line> nearestNeighbor(Board observable) {
 		List<Line> lines = new LinkedList<Line>();
 		List<Point> points = new ArrayList<Point>(observable.getPoints());
-		if (points.size() == 1) {
+		List<List<Integer>> visited = new ArrayList<List<Integer>>(points.size());
+
+		if (points.size() < 2) {
 			return Collections.<Line>emptyList();
 		}
-		for (int i = 0; i < points.size() - 1; i++) {
-			float min = Float.MAX_VALUE;
-			Point nearest = points.get(i);
-			for (int j = i + 1; j < points.size(); j++) {
-				float distance = distanceTo(points.get(i), points.get(j));
-				if (distance < min) {
-					min = distance;
-					nearest = points.get(j);
+		
+		for (int i = 0; i < points.size(); i++) {
+			visited.add(new ArrayList<Integer>());
+		}
+
+		for (int i = 0; i < points.size(); i++) {
+			
+			float minDistance = Float.MAX_VALUE;
+			int minIndex = i;
+			
+			for (int j = 0; j < points.size(); j++) {
+				if (i != j) {
+					float distance = distanceTo(points.get(i), points.get(j));
+					if (distance < minDistance) {
+						minDistance = distance;
+						minIndex = j;
+					}
 				}
 			}
-			lines.add(new Line(points.get(i), nearest));
+			
+			if (!visited.get(i).contains(minIndex)) {
+				visited.get(i).add(minIndex);
+				visited.get(minIndex).add(i);
+				lines.add(new Line(points.get(i), points.get(minIndex)));
+			}
 		}
 		return lines;
 	}
