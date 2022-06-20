@@ -35,7 +35,7 @@ public class KMClusterHandler implements Observer{
 				if (dots.get(i).getClusterNumber()==1){
 					dots.get(i).setColor(PointColor.BLUE);
 			}else{
-					dots.get(i).setColor(PointColor.BLUE);
+					dots.get(i).setColor(PointColor.RED);
 				}
 			}
 		}
