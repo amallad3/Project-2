@@ -8,5 +8,5 @@
  * @version 1.0
  */
 public enum PointColor {
-    RED, BLUE
+    RED, BLUE, NONE
 }
