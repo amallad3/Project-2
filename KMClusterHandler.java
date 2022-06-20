@@ -20,8 +20,7 @@ public class KMClusterHandler implements PointHandler {
     private double[][] means = new double[2][2];
     private ArrayList<Integer>[] ClustersA ;
     private ArrayList<Integer>[] ClustersB ;
-    public int[][] points;
-    private int records =points.length;
+    private int[][] points;
   
 	private List<Point> KMCluster(Board observable) {
 		
@@ -36,8 +35,8 @@ public class KMClusterHandler implements PointHandler {
 		
 		sortPoint(points);
 		for(int i=0; i<means.length; i++) {
-			means[i][0] = points[(int) (Math.floor((records*1/clusters)/2) + i*records/clusters)][0];
-			means[i][1] = points[(int) (Math.floor((records*1/clusters)/2) + i*records/clusters)][1];
+			means[i][0] = points[(int) (Math.floor((points.length*1/clusters)/2) + i*points.length/clusters)][0];
+			means[i][1] = points[(int) (Math.floor((points.length*1/clusters)/2) + i*points.length/clusters)][1];
 		}
 		
 		for(int i=0; i<clusters; i++) {
