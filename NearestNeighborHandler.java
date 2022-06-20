@@ -4,9 +4,9 @@ import java.util.*;
  * This class handles updating the List<Line> in board.
  * 
  *@author Aditya Malladi
- *@version 1.0
+ *@version 1.1
  */
-public class NearestNeighborHandler implements PointHandler {
+public class NearestNeighborHandler implements Observer {
 
 	/**
 	 * This method will update the List<Line> in board based on received options.
@@ -15,33 +15,49 @@ public class NearestNeighborHandler implements PointHandler {
 	 *@param options
 	 */
 	@Override
-	public void update(Board observable, List<UpdateOption> options) {
-		if (options.isEmpty()) {
-			observable.setLines(Collections.<Line>emptyList());
-		} else if (options.get(0) == UpdateOption.CLUSTER) {
-			observable.setLines(Collections.<Line>emptyList());
+	public void update(Observable o, Object args) {
+		Board board = (Board)o;
+		UpdateOption option = (UpdateOption)args;
+		if (option == UpdateOption.CLUSTER) {
+			board.setLines(Collections.<Line>emptyList());
 		} else {
-			observable.setLines(nearestNeighbor(observable));
+			board.setLines(nearestNeighbor(board));
 		}
 	}
 	
-	private List<Line> nearestNeighbor(Board observable) {
+	private List<Line> nearestNeighbor(Board board) {
 		List<Line> lines = new LinkedList<Line>();
-		List<Point> points = new ArrayList<Point>(observable.getPoints());
-		if (points.size() == 1) {
+		List<Point> points = new ArrayList<Point>(board.getPoints());
+		List<List<Integer>> visited = new ArrayList<List<Integer>>(points.size());
+
+		if (points.size() < 2) {
 			return Collections.<Line>emptyList();
 		}
-		for (int i = 0; i < points.size() - 1; i++) {
-			float min = Float.MAX_VALUE;
-			Point nearest = points.get(i);
-			for (int j = i + 1; j < points.size(); j++) {
-				float distance = distanceTo(points.get(i), points.get(j));
-				if (distance < min) {
-					min = distance;
-					nearest = points.get(j);
+		
+		for (int i = 0; i < points.size(); i++) {
+			visited.add(new ArrayList<Integer>());
+		}
+
+		for (int i = 0; i < points.size(); i++) {
+			
+			float minDistance = Float.MAX_VALUE;
+			int minIndex = i;
+			
+			for (int j = 0; j < points.size(); j++) {
+				if (i != j) {
+					float distance = distanceTo(points.get(i), points.get(j));
+					if (distance < minDistance) {
+						minDistance = distance;
+						minIndex = j;
+					}
 				}
 			}
-			lines.add(new Line(points.get(i), nearest));
+			
+			if (!visited.get(i).contains(minIndex)) {
+				visited.get(i).add(minIndex);
+				visited.get(minIndex).add(i);
+				lines.add(new Line(points.get(i), points.get(minIndex)));
+			}
 		}
 		return lines;
 	}
