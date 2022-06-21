@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.util.List;
 /*
 * The BoardPanel is responsible for Draw points & lines.
-* @author: Cungang Zhang & Yeongbae Jeon
-* @version: 2(6/20/2022)
+* @author: Cungang Zhang
+* @version:1.1 (6/20/2022)
 * */
 
 public class BoardPanel extends JPanel {
@@ -55,7 +55,7 @@ public class BoardPanel extends JPanel {
                     default:
                         g.setColor(Color.BLACK);
                 }
-                g.fillOval(p.getX() - 5, p.getY() - 5, 10, 10);
+                g.fillOval(p.getX(), p.getY(), 10, 10);
             }
         }
         if (this.lines != null){
@@ -67,5 +67,9 @@ public class BoardPanel extends JPanel {
                 g.drawLine(x1.getX(),x1.getY(),x2.getX(),x2.getY());
             }
         }
+    }
+
+    public void clearLines() {
+        this.lines = null;
     }
 }
