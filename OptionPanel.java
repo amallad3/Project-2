@@ -46,12 +46,16 @@ public class OptionPanel extends JPanel {
                 } 
                 else if (clusterBox.isSelected()) {
                 	List<Point> points = model.calculateCluster();
-                    boardPanel.clearLines();
                     boardPanel.drawPoints(points);
                 }
                 else if (lineBox.isSelected()) {
                     List<Line> lines = model.calculateLines();
                     boardPanel.drawLines(lines);
+                }
+                else {
+                    List<Point> points = model.calculateCluster();
+                    List<Line> lines = model.calculateLines();
+                    boardPanel.drawPoints(points);
                 }
             }
         });

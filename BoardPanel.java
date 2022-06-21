@@ -31,6 +31,7 @@ public class BoardPanel extends JPanel {
     }
 
     public void drawPoints(List<Point> points) {
+        this.lines = null;
         this.points = points;
         repaint();
     }
@@ -67,9 +68,5 @@ public class BoardPanel extends JPanel {
                 g.drawLine(x1.getX(),x1.getY(),x2.getX(),x2.getY());
             }
         }
-    }
-
-    public void clearLines() {
-        this.lines = null;
     }
 }
