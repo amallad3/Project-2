@@ -1,13 +1,9 @@
-import java.awt.*;
-import java.awt.Point;
-import java.awt.event.*;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.util.List;
-import java.awt.Color;
-
-import static java.awt.Color.BLUE;
-import static java.awt.Color.RED;
-
 /*
 * The BoardPanel is responsible for Draw points & lines.
 * @author: Cungang Zhang
@@ -42,24 +38,24 @@ public class BoardPanel extends JPanel {
         this.lines = lines;
         repaint();
     }
-
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (this.points != null) {
             g.setColor(Color.BLACK);
-            for (Point point : this.points) {
-                switch (point.getColor()){
+            for (Point p : this.points) {
+                switch (p.getColor()){
                     case BLUE:
-                        g.setColor(BLUE);
+                        g.setColor(Color.BLUE);
                         break;
                     case RED:
-                        g.setColor(RED);
+                        g.setColor(Color.RED);
                     case NONE:
                         break;
                     default:
-                        g.setColor(Color.BLACK;
+                        g.setColor(Color.BLACK);
                 }
-               g.fillOval(points.getX(), points.getY(), 10, 10);
+                g.fillOval(p.getX(), p.getY(), 10, 10);
             }
         }
         if (this.lines != null){
