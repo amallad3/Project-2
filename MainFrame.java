@@ -27,13 +27,10 @@ public class MainFrame extends JFrame {
 		this.setSize(800, 500);
 		this.setTitle("Dots Project");
 
-        this.optionPanel = new OptionPanel();
-        this.add(optionPanel, BorderLayout.WEST);
-
         this.boardPanel = new BoardPanel();
         this.add(boardPanel, BorderLayout.CENTER);
 
+        this.optionPanel = new OptionPanel(this.boardPanel);
+        this.add(optionPanel, BorderLayout.WEST);
     }
-
-
 }
