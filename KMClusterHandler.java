@@ -1,146 +1,150 @@
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Observable;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
+
 
 /**
+ * This class handles updating the List<Line> in board.
  * 
- * Using the K-Mean clustering methods to deal withe board coordinates
- * 
- * @author Yaci Zhu
- * @version 2.0
+ *@author Aditya Malladi
+ *@version 1.1
  */
-public class KMClusterHandler implements Observer{
-	private Point[] cent;
-	private int k,n;
-	private List<Point> dots;
-	private Random rand;
-/**
- * 
- * upate the object for observable class
- * 
- * @para board & option
- */
+public class KMClusterHandler implements Observer {
+
+	private static int NUM_OF_TRY = 30;
+
+	/**
+	 * This method will update the List<Line> in board based on received options.
+	 *
+	 *@param observable
+	 *@param options
+	 */
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(Observable o, Object args) {
 		Board board = (Board)o;
-		UpdateOption option = (UpdateOption)arg;
+		UpdateOption option = (UpdateOption)args;
+	
+		List<Point> points = board.getPoints();
+		
 		if (option == UpdateOption.CLUSTER) {
-			board.setPoints(kmclsuer(board));
+			clusterIntoTwoGroups(points);
+		}
+		else {
+			clearAllColors(points);
 		}
 	}
 
-	private  List<Point> kmclsuer(Board board) {
-		dots = new ArrayList<Point>(board.getPoints());
-		n=dots.size();
-		k = Math.max(1, n);
-		cent = new Point[k];
+	private void clusterIntoTwoGroups(List<Point> points) {
+		DoublePoint centroid1 = null;
+		DoublePoint centroid2 = null;
 
-		for(int i =0; i < n; i++){
-			dots.get(i).setClusterNumber(i);
-		}
+
+		/* select two random centroids from the list of points */ 
 		
-		int changed;
-		int bestPercent = n/1000;
-		int minIndex;
-		kpp(cent);
+		while (centroid1 == centroid2) {
+			centroid1 = randomCentroid(points);
+			centroid2 = randomCentroid(points);
+		}
+
+
+		/* find precise centroid of two groups (maximum try: NUM_OF_TRY) */
+
+		int tried = NUM_OF_TRY;
+
+		List<Point> cluster1 = new ArrayList<>(points.size());
+		List<Point> cluster2 = new ArrayList<>(points.size());
+
+		while (tried > 0) {
+			cluster1.clear();
+			cluster2.clear();
+
+			for (Point p : points) {
+				// find distance between centroid and point
+				double dist1 = distance(centroid1, p);
+				double dist2 = distance(centroid2, p);
+
+				double shortestDist = Math.min(dist1, dist2);
+
+				if (shortestDist == dist1)
+					cluster1.add(p);
+				else
+					cluster2.add(p);
+			}
+
+			centroid1 = meanOfCluster(cluster1);
+			centroid2 = meanOfCluster(cluster2);
+
+			tried--;
+		}
+
 		
-		int maxTimes=2;
-		do {
-			for (Point c : cent) {
-					c.setX (0);
-					c.setY(0);
-					c.setClusterNumber(0);
-			}
-		for (int i=0;i<dots.size();i++) {
-			int l=1;
-			int num=dots.get(i).getClusterNumber();
-				if(num < 0 || num > cent.length){
-						((Point) dots).setClusterNumber(rand.nextInt(cent.length));
-				}
-				cent[num].setX(((Point) dots).getX()) ;
-				cent[num].setY(((Point) dots).getY()) ;
-				cent[num].setClusterNumber(l);
-				l++;
-		}
-		for (Point c: cent) {
-			int num1 = c.getX()/c.getClusterNumber();
-			int num2 = c.getY()/c.getClusterNumber();
-				c.setX(num1);
-				c.setY(num2);
-		}
-		changed = 0;
-		for (int i=0;i<dots.size();i++) {
-			int num=dots.get(i).getClusterNumber();
-				minIndex = nearest(dots.get(i), cent, k);
-				if (k !=num) {
-						changed++;
-						dots.get(i).setClusterNumber(minIndex) ;
-				}
-		}
-			maxTimes--;
-		} while (changed > bestPercent && maxTimes > 0);
+		/* set color */
 
-		for(int i=0;i< dots.size();i++){
-			if (dots.get(i).getClusterNumber()==1){
-				dots.get(i).setColor(PointColor.BLUE);
-		}else{
-				dots.get(i).setColor(PointColor.RED);
-			}
-		}
-		return dots;
+		for (Point p : cluster1)
+			p.setColor(PointColor.RED);
+
+		for (Point p : cluster2)
+			p.setColor(PointColor.BLUE);
 	}
 
-	private static float distance(Point a, Point b) {
-			float dis = (float) Math.sqrt((a.getX() - b.getX())*(a.getX() - b.getX())+ (a.getY() - b.getY())*(a.getY() - b.getY()));
-			return dis;
-	}
+	private DoublePoint meanOfCluster(List<Point> points) {
+		double meanX = 0;
+		double meanY = 0;
+		for (Point p : points) {
+			meanX += p.getX();
+			meanY += p.getY();
+		}
+
+		meanX /= points.size();
+		meanY /= points.size();
 	
-	private static int nearest(Point pt, Point[] others, int len){
-		double minD = Double.MAX_VALUE;
-		int index = pt.getClusterNumber();
-		len = Math.min(others.length, len);
-		float dist;
-		for (int i = 0; i < len; i++) {
-			if (minD > (dist = distance(pt, others[i]))) {
-				minD = dist;
-				index = i;
-			}
-		}
-		return index;
-	}
-	
-	private static float nearestDistance(Point pt, Point[] others, int len){
-		float minD = 99999;
-		len = Math.min(others.length, len);
-		float dist;
-		for (int i = 0; i < len; i++) {
-			if (minD > (dist = distance(pt, others[i]))) {
-				minD = dist;
-			}
-		}
-		return minD;
-	}
-	
-	private void kpp(Point[] c){	
-
-		double[] dist = new double[n];
-		double sum = 0;
-		for (int i = 1; i < k; i++) {
-			for (int j = 0; j < n; j++) {
-				dist[j] = nearestDistance(dots.get(j), cent, i);
-				sum += dist[j];
-			}
-			sum = (sum * rand.nextInt(Integer.MAX_VALUE)) / Integer.MAX_VALUE;
-			for (int j = 0; j < n; j++) {
-				if ((sum -= dist[j]) > 0)
-					continue;
-				cent[i].setX(dots.get(i).getX());
-				cent[i].setY(dots.get(i).getY());
-			}
-		}
-		for (int i = 0; i < n; i++) {
-			dots.get(i).setClusterNumber(nearest(dots.get(i), cent, k));
-		}
+		return new DoublePoint(meanX, meanY);	
 	}
 
+	private DoublePoint randomCentroid(List<Point> points) {
+		int randomNum = ThreadLocalRandom.current().nextInt(0, points.size());
+		Point p = points.get(randomNum);
+		return new DoublePoint(p.getX(), p.getY());
+	}
+
+	private double distance(DoublePoint a, Point b) {
+		double xDiffSquared = Math.pow(a.getX() - b.getX(), 2);
+		double yDiffSquared = Math.pow(a.getY() - b.getY(), 2);
+
+		return Math.sqrt(xDiffSquared + yDiffSquared);
+	}
+
+	private void clearAllColors(List<Point> points) {
+		for (Point p : points) {
+			p.setColor(PointColor.NONE);
+		}
+	}
 }
 
 
+class DoublePoint {
+	private double x;
+	private double y;
+
+	DoublePoint(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public double getX() {
+		return this.x;
+	}
+
+	public double getY() {
+		return this.y;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		DoublePoint other = (DoublePoint) o;
+		return this.x == other.x && this.y == other.y;
+	}
+} 
