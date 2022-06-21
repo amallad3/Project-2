@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.util.List;
 /*
 * The BoardPanel is responsible for Draw points & lines.
-* @author: Cungang Zhang
-* @version:1.1 (6/20/2022)
+* @author: Cungang Zhang & Yeongbae Jeon
+* @version: 2(6/20/2022)
 * */
 
 public class BoardPanel extends JPanel {
