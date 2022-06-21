@@ -9,13 +9,10 @@ public class Point {
     private int y;
     private PointColor color;
 
-    private int clusterNumber;
-
-    public Point(int x, int y, PointColor color,int clusterNumber) {
+    public Point(int x, int y, PointColor color) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.clusterNumber=clusterNumber;
     }
 
     public int getX() {
@@ -28,14 +25,6 @@ public class Point {
     
     public PointColor getColor() {
         return this.color;
-    }
-    
-    public int getClusterNumber() {
-        return clusterNumber;
-    }
-    
-    public void setClusterNumber(int i){
-        this.clusterNumber=clusterNumber;
     }
     
     public void setX(int x) {

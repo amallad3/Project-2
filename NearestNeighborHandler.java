@@ -36,7 +36,7 @@ public class NearestNeighborHandler implements Observer {
 			return Collections.<Line>emptyList();
 		}
 		
-		Point topLeft = new Point(0, 0, null, 0);
+		Point topLeft = new Point(0, 0, PointColor.NONE);
 		int startIndex = 0;
 		{
 			float minDistance = Float.MAX_VALUE;

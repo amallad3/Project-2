@@ -24,7 +24,7 @@ public class BoardPanel extends JPanel {
                 int y = e.getY();
                 PointColor c = PointColor.NONE;
                 ClassifierModel model = ClassifierModel.getInstance();
-                List<Point> points = model.addPoint(new Point(x, y, c, 0));
+                List<Point> points = model.addPoint(new Point(x, y, c));
                 drawPoints(points);
             }
         });
