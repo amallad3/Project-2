@@ -56,7 +56,7 @@ public class BoardPanel extends JPanel {
                     default:
                         g.setColor(Color.BLACK);
                 }
-                g.fillOval(p.getX(), p.getY(), 10, 10);
+                g.fillOval(p.getX()-5, p.getY()-5, 10, 10);
             }
         }
         if (this.lines != null){
