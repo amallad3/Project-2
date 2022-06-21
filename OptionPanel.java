@@ -53,6 +53,7 @@ public class OptionPanel extends JPanel {
                     boardPanel.drawLines(lines);
                 }
                 else {
+                    // hack
                     List<Point> points = model.calculateCluster();
                     List<Line> lines = model.calculateLines();
                     boardPanel.drawPoints(points);
