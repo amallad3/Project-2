@@ -24,7 +24,7 @@ public class BoardPanel extends JPanel {
                 int y = e.getY();
                 PointColor c = PointColor.NONE;
                 ClassifierModel model = ClassifierModel.getInstance();
-                List<Point> points = model.addPoint(new Point(x, y, c, -1));
+                List<Point> points = model.addPoint(new Point(x, y, c, 0));
                 drawPoints(points);
             }
         });
@@ -50,8 +50,9 @@ public class BoardPanel extends JPanel {
                         break;
                     case RED:
                         g.setColor(Color.RED);
-                    case NONE:
                         break;
+                    case NONE:
+
                     default:
                         g.setColor(Color.BLACK);
                 }
@@ -59,17 +60,10 @@ public class BoardPanel extends JPanel {
             }
         }
         if (this.lines != null){
-            if(this.lines.size() != 0){
-                Line lastLine = this.lines.get(this.lines.size()-1);
-                Point lastPoint = lastLine.getEndPoint2();
-                g.setColor(Color.BLACK);
-                g.fillOval(lastPoint.getX(),lastPoint.getY(),10,10);
-            }
+
             for(Line l : this.lines){
                 Point x1 = l.getEndPoint1();
                 Point x2 = l.getEndPoint2();
-                g.setColor(Color.BLACK);
-                g.fillOval(x1.getX(),x2.getY(),10,10);
                 g.setColor(Color.ORANGE);
                 g.drawLine(x1.getX(),x1.getY(),x2.getX(),x2.getY());
             }
