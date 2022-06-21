@@ -1,120 +1,31 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Observer;
-import java.util.Observable;
-import java.util.Collections;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-
 /**
- * This class handles updating the List<Line> in board.
  * 
- *@author Aditya Malladi
- *@version 1.1
+ * Using the K-Mean clustering methods to deal withe board coordinates
+ * 
+ * @author Yaci Zhu and Yeongbae Jeon
+ * @version 2.0
  */
-public class KMClusterHandler implements Observer {
-
-	private static int NUM_OF_TRY = 30;
-
+public class KMClusterHandler implements Observer{
+	
 	/**
-	 * This method will update the List<Line> in board based on received options.
-	 *
-	 *@param observable
-	 *@param options
+	 * 
+	 * Update the object for observable class
+	 * 
+	 * @param board & option
 	 */
 	@Override
-	public void update(Observable o, Object args) {
-		Board board = (Board)o;
-		UpdateOption option = (UpdateOption)args;
-	
-		List<Point> points = board.getPoints();
-		
+	public void update(Observable o, Object arg1) {
+		List<Point> dots = ((Board) o).getPoints();
+		UpdateOption option = (UpdateOption)arg1;
 		if (option == UpdateOption.CLUSTER) {
-			clusterIntoTwoGroups(points);
+			clusterIntoTwoGroups(dots);
 		}
 		else {
-			clearAllColors(points);
+			clearAllColors(dots);
 		}
-	}
-
-	private void clusterIntoTwoGroups(List<Point> points) {
-		DoublePoint centroid1 = null;
-		DoublePoint centroid2 = null;
-
-
-		/* select two random centroids from the list of points */ 
-		
-		while (centroid1 == centroid2) {
-			centroid1 = randomCentroid(points);
-			centroid2 = randomCentroid(points);
-		}
-
-
-		/* find precise centroid of two groups (maximum try: NUM_OF_TRY) */
-
-		int tried = NUM_OF_TRY;
-
-		List<Point> cluster1 = new ArrayList<>(points.size());
-		List<Point> cluster2 = new ArrayList<>(points.size());
-
-		while (tried > 0) {
-			cluster1.clear();
-			cluster2.clear();
-
-			for (Point p : points) {
-				// find distance between centroid and point
-				double dist1 = distance(centroid1, p);
-				double dist2 = distance(centroid2, p);
-
-				double shortestDist = Math.min(dist1, dist2);
-
-				if (shortestDist == dist1)
-					cluster1.add(p);
-				else
-					cluster2.add(p);
-			}
-
-			centroid1 = meanOfCluster(cluster1);
-			centroid2 = meanOfCluster(cluster2);
-
-			tried--;
-		}
-
-		
-		/* set color */
-
-		for (Point p : cluster1)
-			p.setColor(PointColor.RED);
-
-		for (Point p : cluster2)
-			p.setColor(PointColor.BLUE);
-	}
-
-	private DoublePoint meanOfCluster(List<Point> points) {
-		double meanX = 0;
-		double meanY = 0;
-		for (Point p : points) {
-			meanX += p.getX();
-			meanY += p.getY();
-		}
-
-		meanX /= points.size();
-		meanY /= points.size();
-	
-		return new DoublePoint(meanX, meanY);	
-	}
-
-	private DoublePoint randomCentroid(List<Point> points) {
-		int randomNum = ThreadLocalRandom.current().nextInt(0, points.size());
-		Point p = points.get(randomNum);
-		return new DoublePoint(p.getX(), p.getY());
-	}
-
-	private double distance(DoublePoint a, Point b) {
-		double xDiffSquared = Math.pow(a.getX() - b.getX(), 2);
-		double yDiffSquared = Math.pow(a.getY() - b.getY(), 2);
-
-		return Math.sqrt(xDiffSquared + yDiffSquared);
 	}
 
 	private void clearAllColors(List<Point> points) {
@@ -122,29 +33,100 @@ public class KMClusterHandler implements Observer {
 			p.setColor(PointColor.NONE);
 		}
 	}
-}
 
+	private void clusterIntoTwoGroups(List<Point> points) {
+		tempPoint cent1 = null,cent2=null;
+		
+		while (cent1 == cent2) {
+			cent1 = randomCent(points);
+			cent2 = randomCent(points);
+		}
+		
+		int maxTimes=30;
+		List<Point> cluster1 = new ArrayList<>(points.size());
+		List<Point> cluster2 = new ArrayList<>(points.size());
+		do {
+			cluster1.clear();
+			cluster2.clear();
+			for (Point p : points) {
+				double dist1 = distance(cent1, p);
+				double dist2 = distance(cent2, p);
+				double shortestDist = Math.min(dist1, dist2);
 
-class DoublePoint {
-	private double x;
-	private double y;
+				if (shortestDist == dist1)
+					cluster1.add(p);
+				else
+					cluster2.add(p);
+		
 
-	DoublePoint(double x, double y) {
-		this.x = x;
-		this.y = y;
+				cent1 = meanOfCluster(cluster1);
+				cent2 = meanOfCluster(cluster2);
+
+				maxTimes--;
+			}
+		}while(maxTimes==0);
+			
+		
+		for (Point p: cluster1)
+			p.setColor(PointColor.RED);
+		for (Point p : cluster2)
+			p.setColor(PointColor.BLUE);
+		
+		}
+	
+	private tempPoint meanOfCluster(List<Point> cluster) {
+		double meanX = 0;
+		double meanY = 0;
+		for (Point p : cluster) {
+			meanX += p.getX();
+			meanY += p.getY();
+		}
+
+		meanX /= cluster.size();
+		meanY /= cluster.size();
+	
+		return new tempPoint(meanX, meanY);
 	}
 
-	public double getX() {
-		return this.x;
+	private double distance(tempPoint a, Point b) {
+		double xDiffSquared = Math.pow(a.getX() - b.getX(), 2);
+		double yDiffSquared = Math.pow(a.getY() - b.getY(), 2);
+		return Math.sqrt(xDiffSquared + yDiffSquared);
 	}
 
-	public double getY() {
-		return this.y;
+	private tempPoint randomCent(List<Point> points) {
+		int randomNum = ThreadLocalRandom.current().nextInt(0, points.size());
+		Point p = points.get(randomNum);
+		return new tempPoint(p.getX(), p.getY());
 	}
+/**
+ * 
+ * This class is temporary use in the KMC in order to store the float center points
+ * 
+ * @author Yaci Zhu and Yeongbae Jeon
+ * @version 2.0
+ */
+	class tempPoint {
+		private double x;
+		private double y;
 
-	@Override
-	public boolean equals(Object o) {
-		DoublePoint other = (DoublePoint) o;
-		return this.x == other.x && this.y == other.y;
+		tempPoint(double x, double y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public double getX() {
+			return this.x;
+		}
+
+		public double getY() {
+			return this.y;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			tempPoint other = (tempPoint) o;
+			return this.x == other.x && this.y == other.y;
+		}
+		}
 	}
-} 
