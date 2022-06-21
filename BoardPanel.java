@@ -2,73 +2,82 @@ import java.awt.*;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
+import java.util.List;
+import java.awt.Color;
+
+import static java.awt.Color.BLUE;
+import static java.awt.Color.RED;
+
 /*
 * The BoardPanel is responsible for Draw points & lines.
 * @author: Cungang Zhang
-* @version:1.0
+* @version:1.1 (6/20/2022)
 * */
 
 public class BoardPanel extends JPanel {
-    private JLabel label;
-    private Point clickPoint;
-
-
-    private void buildUI(Container container) {
-        //container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
-        CoordinateArea coordinateArea = new CoordinateArea(this);
-        container.add(coordinateArea);
-        label = new JLabel();
-        container.add(label);
-    }
+    private List<Point> points;
+    private List<Line> lines;
 
     public BoardPanel(){
-        ClassifierModel model = ClassifierModel.getInstance();
-        JPanel panel = new JPanel();
-        BoardPanel controller = new BoardPanel();
-        controller.buildUI(panel);//Think it is not right... but dont know how to fix //controller.buildUI(frame.getContentPane());
-        panel.setVisible(true);
+        this.setBackground(Color.GRAY);
+        this.setVisible(true);
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                PointColor c = PointColor.NONE;
+                ClassifierModel model = ClassifierModel.getInstance();
+                List<Point> points = model.addPoint(new Point(x, y, c, -1));
+                drawPoints(points);
+            }
+        });
     }
 
-    //adding points on board
-    public void addPoint(Point p) {
-        clickPoint = p;
+    public void drawPoints(List<Point> points) {
+        this.points = points;
+        repaint();
+    }
+    public void drawLines(List<Line> lines){
+        this.lines = lines;
+        repaint();
     }
 
-    public static class CoordinateArea extends JComponent implements MouseInputListener {
-        Point point = null;
-        BoardPanel controller;
-        public CoordinateArea(BoardPanel controller) {
-            this.controller = controller;
-            addMouseListener(this);
-            addMouseMotionListener(this);
-            setOpaque(true);
-        }
-        protected void paintComponent(Graphics g) {
-            if (point != null) {
-                g.setColor(getForeground());
-                g.fillOval(point.x-3, point.y-3, 7,7);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (this.points != null) {
+            g.setColor(Color.BLACK);
+            for (Point point : this.points) {
+                switch (point.getColor()){
+                    case BLUE:
+                        g.setColor(BLUE);
+                        break;
+                    case RED:
+                        g.setColor(RED);
+                    case NONE:
+                        break;
+                    default:
+                        g.setColor(Color.BLACK;
+                }
+               g.fillOval(points.getX(), points.getY(), 10, 10);
             }
         }
-
-        // show the dots
-        public void mouseClicked(MouseEvent e) {
-            int x = e.getX();
-            int y = e.getY();
-            if (point == null) {
-                point = new Point(x, y);
-            } else {
-                point.x = x;
-                point.y = y;
+        if (this.lines != null){
+            if(this.lines.size() != 0){
+                Line lastLine = this.lines.get(this.lines.size()-1);
+                Point lastPoint = lastLine.getEndPoint2();
+                g.setColor(Color.BLACK);
+                g.fillOval(lastPoint.getX(),lastPoint.getY(),10,10);
             }
-            controller.addPoint(point);
-            repaint();
+            for(Line l : this.lines){
+                Point x1 = l.getEndPoint1();
+                Point x2 = l.getEndPoint2();
+                g.setColor(Color.BLACK);
+                g.fillOval(x1.getX(),x2.getY(),10,10);
+                g.setColor(Color.ORANGE);
+                g.drawLine(x1.getX(),x1.getY(),x2.getX(),x2.getY());
+            }
         }
-        public void mouseMoved(MouseEvent e) {}
-        public void mouseExited(MouseEvent e) {}
-        public void mouseReleased(MouseEvent e) {}
-        public void mouseEntered(MouseEvent e) {}
-        public void mousePressed(MouseEvent e) {}
-        public void mouseDragged(MouseEvent e) {}
     }
+
 }
