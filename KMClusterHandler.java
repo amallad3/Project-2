@@ -119,7 +119,7 @@ public class KMClusterHandler implements Observer{
 	}
 	
 	private void kpp(){	
-		cent[0] = dots.get(1);
+		cent[0] = dots.get(rand.nextInt(n));
 		double[] dist = new double[n];
 		double sum = 0;
 		for (int i = 1; i < k; i++) {
