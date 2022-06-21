@@ -19,7 +19,7 @@ public class BoardPanel extends JPanel {
         this.setVisible(true);
         this.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
                 PointColor c = PointColor.NONE;
@@ -52,7 +52,6 @@ public class BoardPanel extends JPanel {
                         g.setColor(Color.RED);
                         break;
                     case NONE:
-
                     default:
                         g.setColor(Color.BLACK);
                 }
