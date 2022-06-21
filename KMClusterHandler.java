@@ -28,7 +28,7 @@ public class KMClusterHandler implements Observer{
 	}
 
 	private  List<Point> kmclsuer(Board board) {
-		List<Point> dots = new ArrayList<Point>(board.getPoints());
+		dots = new ArrayList<Point>(board.getPoints());
 		n=dots.size();
 		k = Math.max(1, n);
 		cent = new Point[k];
@@ -40,7 +40,7 @@ public class KMClusterHandler implements Observer{
 		int changed;
 		int bestPercent = n/1000;
 		int minIndex;
-		kpp();
+		kpp(cent);
 		
 		int maxTimes=2;
 		do {
@@ -88,15 +88,16 @@ public class KMClusterHandler implements Observer{
 		return dots;
 	}
 
-	private static double distance(Point a, Point b) {
-		return (a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY());
+	private static float distance(Point a, Point b) {
+			float dis = (float) Math.sqrt((a.getX() - b.getX())*(a.getX() - b.getX())+ (a.getY() - b.getY())*(a.getY() - b.getY()));
+			return dis;
 	}
 	
 	private static int nearest(Point pt, Point[] others, int len){
 		double minD = Double.MAX_VALUE;
 		int index = pt.getClusterNumber();
 		len = Math.min(others.length, len);
-		double dist;
+		float dist;
 		for (int i = 0; i < len; i++) {
 			if (minD > (dist = distance(pt, others[i]))) {
 				minD = dist;
@@ -106,10 +107,10 @@ public class KMClusterHandler implements Observer{
 		return index;
 	}
 	
-	private static double nearestDistance(Point pt, Point[] others, int len){
-		double minD = Double.MAX_VALUE;
+	private static float nearestDistance(Point pt, Point[] others, int len){
+		float minD = 99999;
 		len = Math.min(others.length, len);
-		double dist;
+		float dist;
 		for (int i = 0; i < len; i++) {
 			if (minD > (dist = distance(pt, others[i]))) {
 				minD = dist;
@@ -118,8 +119,8 @@ public class KMClusterHandler implements Observer{
 		return minD;
 	}
 	
-	private void kpp(){	
-		cent[0] = dots.get(rand.nextInt(n));
+	private void kpp(Point[] c){	
+
 		double[] dist = new double[n];
 		double sum = 0;
 		for (int i = 1; i < k; i++) {
@@ -141,4 +142,5 @@ public class KMClusterHandler implements Observer{
 	}
 
 }
+
 
