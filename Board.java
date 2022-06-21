@@ -21,6 +21,9 @@ public class Board extends Observable {
     public Board() {
         this.points = new LinkedList<Point>();
         this.lines = new LinkedList<Line>();
+
+        this.addObserver(new NearestNeighborHandler());
+        this.addObserver(new KMClusterHandler());
     }
 
     public void addPoint(Point newPoint) {
